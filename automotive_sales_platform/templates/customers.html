@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Customers</h1>
+
+<section>
+  <h2>Add customer</h2>
+  <form method="post" class="inline-form">
+    <input name="name" placeholder="Full name" required>
+    <input name="phone" placeholder="Phone">
+    <input name="email" type="email" placeholder="Email">
+    <button>Add</button>
+  </form>
+</section>
+
+<section>
+  <table>
+    <tr><th>Name</th><th>Phone</th><th>Email</th><th>Orders</th><th>Total spent</th></tr>
+    {% for c in customers %}
+    <tr><td>{{ c.name }}</td><td>{{ c.phone }}</td><td>{{ c.email }}</td>
+        <td>{{ c.orders }}</td><td>{{ c.spent|inr }}</td></tr>
+    {% endfor %}
+  </table>
+</section>
+{% endblock %}

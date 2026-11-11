@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Vehicle Inventory</h1>
+
+<section>
+  <h2>Add vehicle</h2>
+  <form method="post" class="inline-form">
+    <input name="make" placeholder="Make (e.g. Tata)" required>
+    <input name="model" placeholder="Model" required>
+    <input name="year" type="number" min="1990" max="{{ this_year + 1 }}" value="{{ this_year }}" required>
+    <input name="price" type="number" min="1" step="1" placeholder="Price" required>
+    <input name="stock" type="number" min="0" value="1" required>
+    <button>Add</button>
+  </form>
+</section>
+
+<section>
+  <table>
+    <tr><th>ID</th><th>Vehicle</th><th>Year</th><th>Price</th><th>Stock</th><th>Restock</th><th></th></tr>
+    {% for v in vehicles %}
+    <tr>
+      <td>{{ v.id }}</td><td>{{ v.make }} {{ v.model }}</td><td>{{ v.year }}</td>
+      <td>{{ v.price|inr }}</td>
+      <td>
+        {% if v.stock == 0 %}<span class="badge bad">Out of stock</span>
+        {% elif v.stock <= low_stock %}<span class="badge warn">{{ v.stock }} (low)</span>
+        {% else %}<span class="badge good">{{ v.stock }}</span>{% endif %}
+      </td>
+      <td>
+        <form method="post" action="{{ url_for('restock', vid=v.id) }}" class="inline-form">
+          <input name="qty" type="number" min="1" value="1" class="narrow"><button>+ Add</button>
+        </form>
+      </td>
+      <td>
+        <form method="post" action="{{ url_for('delete_vehicle', vid=v.id) }}"
+              onsubmit="return confirm('Delete this vehicle?')">
+          <button class="danger">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</section>
+{% endblock %}

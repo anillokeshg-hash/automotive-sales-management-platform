@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Dashboard</h1>
+
+<div class="cards">
+  <div class="card"><span>Total revenue</span><b>{{ kpi.revenue|inr }}</b></div>
+  <div class="card"><span>Units sold</span><b>{{ kpi.units }}</b></div>
+  <div class="card"><span>Orders</span><b>{{ kpi.orders }}</b></div>
+  <div class="card"><span>Vehicles in stock</span><b>{{ kpi.in_stock }}</b></div>
+  <div class="card"><span>Customers</span><b>{{ kpi.customers }}</b></div>
+</div>
+
+<div class="grid2">
+  <section>
+    <h2>Revenue by make</h2>
+    {% for r in by_make %}
+    <div class="bar-row">
+      <span>{{ r.make }}</span>
+      <div class="bar"><i style="width: {{ (r.revenue / max_make * 100)|round|int }}%"></i></div>
+      <em>{{ r.revenue|inr }}</em>
+    </div>
+    {% else %}<p class="muted">No sales yet.</p>{% endfor %}
+  </section>
+
+  <section>
+    <h2>Monthly revenue</h2>
+    {% for r in monthly %}
+    <div class="bar-row">
+      <span>{{ r.month }}</span>
+      <div class="bar"><i class="alt" style="width: {{ (r.revenue / max_month * 100)|round|int }}%"></i></div>
+      <em>{{ r.revenue|inr }}</em>
+    </div>
+    {% else %}<p class="muted">No sales yet.</p>{% endfor %}
+  </section>
+</div>
+
+<div class="grid2">
+  <section>
+    <h2>Low stock alerts</h2>
+    <table>
+      <tr><th>Vehicle</th><th>Stock</th></tr>
+      {% for v in low %}
+      <tr><td>{{ v.make }} {{ v.model }}</td><td><span class="badge warn">{{ v.stock }}</span></td></tr>
+      {% else %}<tr><td colspan="2" class="muted">All vehicles well stocked.</td></tr>{% endfor %}
+    </table>
+  </section>
+
+  <section>
+    <h2>Salesperson performance</h2>
+    <table>
+      <tr><th>Name</th><th>Units</th><th>Revenue</th></tr>
+      {% for r in reps %}
+      <tr><td>{{ r.salesperson }}</td><td>{{ r.units }}</td><td>{{ r.revenue|inr }}</td></tr>
+      {% endfor %}
+    </table>
+  </section>
+</div>
+
+<section>
+  <h2>Recent sales</h2>
+  <table>
+    <tr><th>Date</th><th>Vehicle</th><th>Customer</th><th>Qty</th><th>Total</th></tr>
+    {% for s in recent %}
+    <tr><td>{{ s.sale_date }}</td><td>{{ s.make }} {{ s.model }}</td><td>{{ s.customer }}</td>
+        <td>{{ s.quantity }}</td><td>{{ (s.quantity * s.price_at_sale)|inr }}</td></tr>
+    {% endfor %}
+  </table>
+</section>
+{% endblock %}
